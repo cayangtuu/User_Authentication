@@ -17,12 +17,11 @@ app.post("/", (req, res) => {
   const User = users.find(user => {
     return user.email.includes(Email) && user.password.includes(Password)
   })
-  console.log(User)
   if (User) {
     const message = `Welcome Back, ${User.firstName}`
     res.render("welcome", { message })
   } else {
-    const error = "Username 或 Password 錯誤"
+    const error = "Email 或 Password 錯誤"
     res.render("index", { error })
   }
 })
