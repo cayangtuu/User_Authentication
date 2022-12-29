@@ -1,5 +1,6 @@
 const express = require("express")
 const exphbs = require("express-handlebars")
+const session = require("express-session")
 const users = require("./users")
 const port = 3000
 
@@ -7,6 +8,12 @@ const app = express()
 app.engine("hbs", exphbs({ defaultLayout: "main", extname: "hbs" }))
 app.set("view engine", "hbs")
 app.use(express.urlencoded({ extended: true }))
+app.use(session({
+  secret: 'itSAsEcRethoPeyOuknowtHAt',
+  name: 'user_id', //將Cookie中預設session_id名稱由"connect.sid"改為"user_id"
+  resave: false,
+  saveUninitialized: false
+}))
 
 app.get("/", (req, res) => {
   res.render("index")
@@ -18,11 +25,23 @@ app.post("/", (req, res) => {
     return user.email.includes(Email) && user.password.includes(Password)
   })
   if (User) {
-    const message = `Welcome Back, ${User.firstName}`
-    res.render("welcome", { message })
+    req.session.isLogin = true
+    req.session.firstName = User.firstName
+    return res.redirect("/welcome")
   } else {
-    const error = "Email 或 Password 錯誤"
-    res.render("index", { error })
+    const error = "*** Email 或 Password 錯誤"
+    return res.render("index", { error })
+  }
+})
+
+app.get("/welcome", (req, res) => {
+  const { isLogin, firstName } = req.session
+  if (isLogin) {
+    const message = `Welcome Back, ${firstName}`
+    return res.render("welcome", { message })
+  } else {
+    const error = "*** 請先登入"
+    return res.render("index", { error })
   }
 })
 
