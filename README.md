@@ -42,6 +42,7 @@ http://localhost:3000
 - Node.js-16.18.0
 - express-4.16.4
 - express-handlebars-3.0.0
+- express-session-1.17.3
 - nodemon-2.0.20
 
 ### 參考文章(reference)
